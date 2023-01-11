@@ -4,7 +4,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #%% 배열 생성
-#dataset = pd.read_csv('C:/Users/LG/Desktop/udemy/MLandDL/Machine Learning A-Z (Codes and Datasets)/Part 2 - Regression/Section 4 - Simple Linear Regression/Python/Salary_Data.csv')
 X = np.arange(1,11)
 Y = np.array([3,5,8,4,9,7,12,8,9,13])
 #%% 산점도 확인
