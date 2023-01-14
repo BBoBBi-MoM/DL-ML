@@ -5,6 +5,7 @@ import torchvision.transforms as transforms
 import torchvision
 from torch.utils.data import DataLoader
 import pandas as pd
+import matplotlib.pyplot as plt
 
 #%% hyper parameters
 
@@ -79,7 +80,7 @@ total_batch = len(data_loader)
 print('Learnig start')
 for epoch in range(traing_epoch):
     average_cost = 0.0
-
+    accuracy_counts = 0
     for num,data in enumerate(data_loader):
         imgs ,labels = data
         optimizer.zero_grad()
@@ -88,20 +89,21 @@ for epoch in range(traing_epoch):
         loss.backward()
         optimizer.step()
         _,argmax =  torch.max(out,1)
-        accuracy = (argmax==labels).float().mean()
+        accuracy_counts += (argmax==labels).float().sum()
         average_cost += loss / total_batch
-    print('[EPOCH:{}/{}] COST:{:.5f} , ACCURACY:{}%'.format(epoch+1,traing_epoch,average_cost,(accuracy*100)))
+    accuracy_rate = accuracy_counts/len(train_set)*100
+    print('[EPOCH:{}/{}] COST:{:.5f} , ACCURACY:{:2f}%'.format(epoch+1,traing_epoch,average_cost,(accuracy_rate)))
     
 print('finished')
 #%%
 
 
 # %% save the model
-SAVE_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_01.pt'
-torch.save(model, SAVE_PATH)
+#SAVE_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_trainacc_99.pt'
+#torch.save(model, SAVE_PATH)
 #%% Load the model
-LOAD_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_01.pt'
-model = torch.load(SAVE_PATH)
+#LOAD_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_01.pt'
+#model = torch.load(SAVE_PATH)
 #%% confusion matrix
 column_list = ['cat img','dog img']
 row_list = ['cat pred','dog pred']
@@ -130,4 +132,5 @@ with torch.no_grad():
         
     print(table)
     print(f'ACCURACY:{(table.iloc[0,0]+table.iloc[1,1])/len(test_loader)*100}%')
+
 # %%
