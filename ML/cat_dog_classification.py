@@ -117,6 +117,8 @@ with torch.no_grad():
         img , label = data
         prediction = model(img)
         _,argmax = torch.max(prediction,1)
+        if (num+1)%(200) ==0:
+            print(f'{(num+1)/2000*100}%')
         
         if label ==0:            #사진이 고양이일때
             if argmax== 0:        #예측도 고양이일때
@@ -142,7 +144,17 @@ with torch.no_grad():
     for num, data in enumerate(single_img_loader):
         img , label = data
         pred = model(img)
-        _,argmax = torch.max(prediction,1)
+        _,argmax = torch.max(pred,1)
+        temp_img = img[0]
+        temp_img[0] *= (0.229)
+        temp_img[0] += (0.485)
+        temp_img[1] *= (0.224)
+        temp_img[1] += (0.456)
+        temp_img[2] *= (0.225)
+        temp_img[2] += (0.406)
+        temp_img = temp_img.permute(1,2,0)
+        plt.imshow(temp_img)
+        plt.show()
         if label == 0:
             if argmax == 0:
                 print('고양이를 고양이로 예측했습니다.')
@@ -155,4 +167,3 @@ with torch.no_grad():
                 print('개를 개로 예측했습니다.')
 
 # %%
-plt.show()
