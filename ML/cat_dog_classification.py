@@ -102,8 +102,8 @@ print('finished')
 #SAVE_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_trainacc_99.pt'
 #torch.save(model, SAVE_PATH)
 #%% Load the model
-#LOAD_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_01.pt'
-#model = torch.load(SAVE_PATH)
+LOAD_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_trainacc_99.pt'
+model = torch.load(LOAD_PATH)
 #%% confusion matrix
 column_list = ['cat img','dog img']
 row_list = ['cat pred','dog pred']
@@ -111,9 +111,8 @@ val = [[0,0],[0,0]]
 table = pd.DataFrame(columns=column_list,index=row_list)
 table.fillna(0,inplace=True)
 #%% Test
-test_loader = DataLoader(dataset = test_set, batch_size=1)
+test_loader = DataLoader(dataset = test_set)
 with torch.no_grad():
-    correct_count = 0
     for num,data in enumerate(test_loader):
         img , label = data
         prediction = model(img)
@@ -134,3 +133,26 @@ with torch.no_grad():
     print(f'ACCURACY:{(table.iloc[0,0]+table.iloc[1,1])/len(test_loader)*100}%')
 
 # %%
+
+single_img_dataset = torchvision.datasets.ImageFolder(root=r'./dataset/single_prediction',
+                                                      transform = transform)
+single_img_loader = DataLoader(dataset=single_img_dataset)
+# %%
+with torch.no_grad():
+    for num, data in enumerate(single_img_loader):
+        img , label = data
+        pred = model(img)
+        _,argmax = torch.max(prediction,1)
+        if label == 0:
+            if argmax == 0:
+                print('고양이를 고양이로 예측했습니다.')
+            else :
+                print('고양이를 개로 예측했습니다.')
+        else :
+            if argmax == 0:
+                print('개를 고양이로 예측했습니다.')
+            else :
+                print('개를 개로 예측했습니다.')
+
+# %%
+plt.show()
