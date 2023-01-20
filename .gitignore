@@ -1,1 +1,3 @@
 /dataset
+DL/CNN+LSTM/dataset/covid_19_data.csv
+DL/CNN+LSTM/dataset/time_series_covid19_confirmed_global.csv

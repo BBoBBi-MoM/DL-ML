@@ -20,9 +20,9 @@ transform = transforms.Compose([transforms.Resize((128,128)),
                                 transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
                                 ])
 
-train_set = torchvision.datasets.ImageFolder(root=r'C:\Users\Administrator\Desktop\python\DL-ML\ML\dataset\training_set',
+train_set = torchvision.datasets.ImageFolder(root=r'C:\Users\Administrator\Desktop\python\DL-ML\dataset\training_set',
                                              transform = transform)
-test_set = torchvision.datasets.ImageFolder(root=r'C:\Users\Administrator\Desktop\python\DL-ML\ML\dataset\test_set',
+test_set = torchvision.datasets.ImageFolder(root=r'C:\Users\Administrator\Desktop\python\DL-ML\dataset\test_set',
                                             transform = transform)
 
 data_loader = DataLoader(dataset=train_set,batch_size=batch_size,shuffle=True,drop_last=True)
@@ -99,10 +99,10 @@ print('finished')
 
 
 # %% save the model
-#SAVE_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_trainacc_99.pt'
+#SAVE_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\trash_model.pt'
 #torch.save(model, SAVE_PATH)
 #%% Load the model
-LOAD_PATH = r'C:\Users\Administrator\Desktop\python\DL-ML\ML\saved_model\cat_dog_0114_trainacc_99.pt'
+LOAD_PATH = r'.\saved_model\cat_dog_0114_trainacc_99.pt'
 model = torch.load(LOAD_PATH)
 #%% confusion matrix
 column_list = ['cat img','dog img']
@@ -136,7 +136,7 @@ with torch.no_grad():
 
 # %%
 
-single_img_dataset = torchvision.datasets.ImageFolder(root=r'./dataset/single_prediction',
+single_img_dataset = torchvision.datasets.ImageFolder(root=r'C:\Users\Administrator\Desktop\python\DL-ML\dataset\single_prediction',
                                                       transform = transform)
 single_img_loader = DataLoader(dataset=single_img_dataset)
 # %%
@@ -157,13 +157,13 @@ with torch.no_grad():
         plt.show()
         if label == 0:
             if argmax == 0:
-                print('고양이를 고양이로 예측했습니다.')
+                print('고양이를 고양이로 분류했습니다.')
             else :
-                print('고양이를 개로 예측했습니다.')
+                print('고양이를 개로 분류했습니다.')
         else :
             if argmax == 0:
-                print('개를 고양이로 예측했습니다.')
+                print('개를 고양이로 분류했습니다.')
             else :
-                print('개를 개로 예측했습니다.')
+                print('개를 개로 분류했습니다.')
 
 # %%
