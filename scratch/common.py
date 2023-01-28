@@ -150,8 +150,125 @@ def softmax(a):
 def sum_squares_error(y,t):
     return 0.5* np.sum((y-t)**2)
 #%%
-def cross_entropy_error(y,t):
-    eps = 1e-7
-    return -np.sum(t*np.log(y+eps))
+# def cross_entropy_error(y,t):
+#     eps = 1e-7
+#     return -np.sum(t*np.log(y+eps))
 
+def cross_entropy_error(y,t):
+    if y.dim == 1:
+        t = t.reshape(1,t.size)
+        y = y.reshape(1,y.size)
+    batch_size = y.shape[0]
+    return -np.sum(t*np.log(y+1e-7))/batch_size
 # %%
+def cross_entropy_error(y,t):
+    if y.dim == 1:
+        t = t.reshape(1,t.size)
+        y = y.reshape(1,y.size)
+    
+    batch_size = y.shape[0]
+    return -np.sum(np.log(y[np.arange(batch_size),t]+1e-7))/batch_size
+
+def numerical_diff(f,x):
+    h = 1e-4
+    return (f(x+h)-f(x-h))/(2*h)
+
+def numerical_gradient(f,x):
+    h = 1e-4
+    grad = np.zeros_like(x)
+
+    for idx in range(x.size):
+        tmp_val = x[idx]
+        x[idx] = tmp_val +h
+        fxh1 = f(x)
+
+        x[idx] = tmp_val-h
+        fxh2 = f(x)
+
+        grad[idx] = (fxh1 - fxh2)/(2*h)
+        x[idx] = tmp_val
+
+    return grad
+
+def gradient_descent(f, init_x, lr=0.01,step_num=100):
+    x = init_x
+
+    for i in range(step_num):
+        grad = numerical_gradient(f,x)
+        x -= lr*grad
+    return x
+class MulLayer:
+    def __init__(self):
+        self.x = None
+        self.y = None
+    
+    def forward(self,x,y):
+        self.x = x
+        self.y = y
+        out = x*y
+
+        return out
+    
+    def backward(self,dout):
+        dx = dout*self.y
+        dy = dout*self.x
+
+        return dx,dy
+
+class AddLayer:
+    def __init__(self):
+        pass
+    
+    def forward(self,x,y):
+        self.x = x
+        self.y = y
+        out = x+y
+
+        return out
+    def backward(self,dout):
+        dx = dout
+        dy = dout
+
+        return dx,dy
+
+class Relu:
+    def __init__(self):
+        self.mask = None
+    
+    def forward(self,x):
+        self.mask = (x<=0)
+        out = x.copy()
+        out[self.mask] = 0
+
+        return out
+    
+    def backward(self, dout):
+        dout[self.mask] = 0
+        dx = dout
+        
+        return dx
+
+class Sigmoid:
+    def __init__(self):
+        self.out = None
+    
+    def forward(self,x):
+        out = 1 / (1+np.exp(-x))
+        self.out = out
+        return out
+
+    def backward(self, dout):
+        dx = dout * (1.0 - self.out) * self.out
+
+        return dx
+# %%
+def exp_function(x):
+    return np.exp(x)
+# %%
+class SGD:
+    def __init__(self,lr=0.01):
+        self.lr = lr
+    
+    def update(self, params, grads):
+        for key in params.keys():
+            params[key] -= self.lr*grads[key]
